@@ -96,6 +96,8 @@ begin
 	INST1: Adder port map(sum, "0000"&hex_A, "0000"& hex_B);
 	
 	INST2: mux port map(pb(3), sum, hex_B & hex_A, mux_out_1);
+	
+	leds <= mux_out_1;
 		
 	INST3: SevenSegment port map(mux_out_1(3 downto 0), seg7_A);
 	
