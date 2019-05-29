@@ -18,6 +18,7 @@ begin
 	with pb select						      
 	Logic_Func 				    <= hex_A AND hex_B when "110",    
 										 hex_A OR hex_B when "101", 
-										 hex_A XOR hex_B when "011";    
+										 hex_A XOR hex_B when "011",
+										 "0000" when others;
 	
 end architecture Behavioral; 

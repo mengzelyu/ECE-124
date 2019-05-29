@@ -27,8 +27,8 @@ architecture SimpleCircuit of LogicalStep_Lab2_top is
 	
 	component Adder port (
    sum	   	:  out  std_logic_vector(7 downto 0); 
-   add_inpA	   :  in  std_logic_vector(3 downto 0); 
-   add_inpB	   :  in  std_logic_vector(3 downto 0)
+   add_inpA	   :  in  std_logic_vector(7 downto 0); 
+   add_inpB	   :  in  std_logic_vector(7 downto 0)
    ); 
    end component;
 	
@@ -70,6 +70,8 @@ architecture SimpleCircuit of LogicalStep_Lab2_top is
 	signal input		: std_logic_vector(7 downto 0);
 	signal add_inpA	: std_logic_vector(7 downto 0);
 	signal add_inpB	: std_logic_vector(7 downto 0);
+	
+	signal Logic_Func		: std_logic_vector(3 downto 0);
 
 -- Here the circuit begins
 component segment7_mux port (
@@ -84,23 +86,30 @@ end component;
 
 begin
 
-	hex_A <= sw(3 downto 0);
-	hex_B <= sw(7 downto 4);
+	hex_A <= sw(7 downto 4);
+	hex_B <= sw(3 downto 0);
 	--seg7_data <= seg7_A;
 
 --COMPONENT HOOKUP
 --
 -- generate the seven segment coding
-	INST1: Adder port map(sum, hex_A, hex_B);
+	INST1: Adder port map(sum, "0000"&hex_A, "0000"& hex_B);
 	
-	INST2: mux port map(pb_3, sum, hex_B & hex_A, mux_out_1);
+	INST2: mux port map(pb(3), sum, hex_B & hex_A, mux_out_1);
 		
 	INST3: SevenSegment port map(mux_out_1(3 downto 0), seg7_A);
 	
 	INST4: SevenSegment port map(mux_out_1(7 downto 4), seg7_B);
 --	
 	INST5: segment7_mux port map(Clkin_50, seg7_A, seg7_B, seg7_data,seg7_char1, seg7_char2 );
+	
+	--- led output path
+	
+	INST6: Logic_Processor port map(pd, hex_B, hex_A, Logic_Func );
+	
+	INST7: mux port map(pb(3), sum, "0000" & Logic_Func, mux_out_2);
 
+	leds <= mux_out_2;
  
 end SimpleCircuit;
 
